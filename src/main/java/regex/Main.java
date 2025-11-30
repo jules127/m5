@@ -8,11 +8,6 @@ import java.util.regex.Pattern;
 
 public class Main {
 
-    /**
-     * The Main method for this assignment.
-     * You can optionally run this to interactively try the three methods.
-     * @param args parameters are unused
-     */
     public static void main(String[] args) {
         final Scanner scanner = new Scanner(System.in);
         System.out.print("Please enter a string: ");
@@ -24,58 +19,70 @@ public class Main {
         System.out.println(checkForDoubles(userInput));
     }
 
-    // Method 1 for checking if a string matches a regex: using Pattern.matches
-    // TODO: Modify this code to check if the given string is non-empty, contains at least
-    //       one lower case letter, at least one upper case letter, and at least one digit. If the
-    //       string has all of these properties, the method should return true. If it is missing one
-    //       or more properties, it should return false.
-
     /**
-     * Returns whether a given string is non-empty, contains one lower case letter,
-     * at least one upper case letter, at least one digit, and meets the minimum length.
-     * @param str the string to check for the properties in
-     * @param minLength the minimum length required for the password
-     * @return whether the string satisfies the password requirements
+     * Checks whether a string is non-empty, has at least one lowercase letter,
+     * one uppercase letter, one digit, and meets the minimum length.
+     *
+     * @param str       the string to check
+     * @param minLength the minimum length required
+     * @return true if str satisfies all password requirements, false otherwise
      */
     public static boolean checkForPassword(String str, int minLength) {
-        final boolean propertyOne = Pattern.matches("REPLACE WITH CORRECT REGEX", str);
-        // as needed, modify this code.
-        return propertyOne;
+        // Handle null explicitly: a null string cannot be a valid password
+        if (str == null) {
+            return false;
+        }
+
+        // Regex: at least one lowercase letter, one uppercase letter, one digit,
+        // and total length ≥ minLength.
+        final String regex =
+                "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{" + minLength + ",}$";
+
+        return Pattern.matches(regex, str);
     }
 
-    // Method 2 for checking if a string conforms to a regex: using Matcher.find
-    // TODO: Modify this method to return a list of all email addresses contained in the
-    //       input string that end with "@mail.utoronto.ca" or "@utoronto.ca" with at least one
-    //       character before the "@" symbol. The email addresses should be in the order they
-    //       appear in the string.
-
     /**
-     * Returns a list of email addresses that occur in a given string.
-     * @param str the string to look for email addresses in
-     * @return a list containing the email addresses in the string.
+     * Extracts all email addresses ending with "@utoronto.ca" or "@mail.utoronto.ca"
+     * that contain at least one character before the '@' symbol.
+     * Emails are returned in the order they appear in the string.
+     *
+     * @param str the string to search
+     * @return a list of matching email addresses (empty if none or if str is null)
      */
     public static List<String> extractEmails(String str) {
-        final Pattern pattern = Pattern.compile("REPLACE WITH CORRECT REGEX");
-        final Matcher matcher = pattern.matcher(str);
+        // If input is null, just return an empty list instead of throwing an exception.
         final List<String> result = new ArrayList<>();
+        if (str == null) {
+            return result;
+        }
+
+        // Regex: one or more non-space, non-@ characters + @ + (optional "mail.") + utoronto.ca
+        final Pattern pattern =
+                Pattern.compile("\\b[^\\s@]+@(mail\\.)?utoronto\\.ca\\b");
+
+        final Matcher matcher = pattern.matcher(str);
+
         while (matcher.find()) {
             result.add(matcher.group());
         }
+
         return result;
     }
 
-    // Method 3 for checking if a string conforms to a regex: using String.matches
-
-    // TODO: Modify this method to check whether or not the string contains the same capital letter
-    //       twice. For example "Amazing Apple" contains "A" twice. If the string does repeat the same
-    //       capital letter twice, the method should return true. Otherwise it should return false.
-
     /**
-     * Checks whether a given string contains the same capital letter twice.
-     * @param str the string to look for doubles in
-     * @return whether str contains the same capital letter twice.
+     * Checks whether the string contains the same capital letter at least twice.
+     * Example: "Amazing Apple" → true (two 'A's)
+     *
+     * @param str the string to search
+     * @return true if the same capital letter appears at least twice, false otherwise
      */
     public static boolean checkForDoubles(String str) {
-        return str.matches("replace with correct regex");
+        // Null cannot contain any letters
+        if (str == null) {
+            return false;
+        }
+
+        // Capture a capital letter and check if it appears again later.
+        return str.matches(".*([A-Z]).*\\1.*");
     }
 }
